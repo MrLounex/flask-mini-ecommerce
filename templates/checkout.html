@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body { background: #f8f9fa; }
+    .checkout-container {
+      max-width: 1000px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .summary-box {
+      background: #f1f3f5;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="checkout-container">
+    <h2 class="mb-4"><i class="bi bi-credit-card"></i> Checkout</h2>
+
+    {% if error %}
+      <div class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle"></i> {{ error }}
+      </div>
+    {% endif %}
+
+    <!-- Form Data Pembeli -->
+    <form method="POST" class="mb-4">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label"><i class="bi bi-person"></i> Nama Lengkap</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label"><i class="bi bi-envelope"></i> Email</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label"><i class="bi bi-telephone"></i> Telepon</label>
+          <input type="text" name="phone" class="form-control" required>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label"><i class="bi bi-geo-alt"></i> Alamat</label>
+          <textarea name="address" class="form-control" rows="2" required></textarea>
+        </div>
+      </div>
+
+      <!-- Daftar Produk -->
+      <h5 class="mt-4"><i class="bi bi-bag"></i> Ringkasan Belanja</h5>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Produk</th>
+              <th>Qty</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+            <tr>
+              <td>{{ item["product"]["name"] }}</td>
+              <td>{{ item["qty"] }}</td>
+              <td>{{ format_rupiah(item["subtotal"]) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Ringkasan -->
+      <div class="summary-box mb-3">
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>{{ format_rupiah(subtotal) }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Ongkos Kirim</span>
+          <span>{{ format_rupiah(ongkir) }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Diskon</span>
+          <span>-{{ format_rupiah(diskon) }}</span>
+        </div>
+        <hr>
+        <div class="summary-row">
+          <strong>Total Bayar</strong>
+          <strong class="text-success">{{ format_rupiah(total) }}</strong>
+        </div>
+      </div>
+
+      <!-- Tombol -->
+      <div class="d-flex justify-content-between mt-4">
+        <a href="{{ url_for('cart') }}" class="btn btn-secondary">
+          <i class="bi bi-arrow-left"></i> Kembali ke Keranjang
+        </a>
+        <button type="submit" class="btn btn-success">
+          <i class="bi bi-bag-check-fill"></i> Buat Pesanan
+        </button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
